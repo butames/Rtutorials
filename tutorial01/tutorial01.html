@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.335">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Seyram A. Butame">
+
+<title>Creating Maps in Leaflet</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="tutorial01_files/libs/clipboard/clipboard.min.js"></script>
+<script src="tutorial01_files/libs/quarto-html/quarto.js"></script>
+<script src="tutorial01_files/libs/quarto-html/popper.min.js"></script>
+<script src="tutorial01_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="tutorial01_files/libs/quarto-html/anchor.min.js"></script>
+<link href="tutorial01_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="tutorial01_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="tutorial01_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="tutorial01_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="tutorial01_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="tutorial01_files/libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<script src="tutorial01_files/libs/jquery-1.12.4/jquery.min.js"></script>
+<link href="tutorial01_files/libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="tutorial01_files/libs/leaflet-1.3.1/leaflet.js"></script>
+<link href="tutorial01_files/libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="tutorial01_files/libs/proj4-2.6.2/proj4.min.js"></script>
+<script src="tutorial01_files/libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script>
+<link href="tutorial01_files/libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="tutorial01_files/libs/leaflet-binding-2.1.2/leaflet.js"></script>
+<script src="tutorial01_files/libs/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script>
+<script src="tutorial01_files/libs/leaflet-providers-plugin-2.1.2/leaflet-providers-plugin.js"></script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#leaflet-concept-map" id="toc-leaflet-concept-map" class="nav-link active" data-scroll-target="#leaflet-concept-map"><span class="toc-section-number">1</span>  Leaflet Concept Map</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="toc-section-number">2</span>  Data</a></li>
+  <li><a href="#main-functions" id="toc-main-functions" class="nav-link" data-scroll-target="#main-functions"><span class="toc-section-number">3</span>  Main Functions</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="toc-section-number">4</span>  Example</a>
+  <ul class="collapse">
+  <li><a href="#exmaple---libraries" id="toc-exmaple---libraries" class="nav-link" data-scroll-target="#exmaple---libraries"><span class="toc-section-number">4.1</span>  Exmaple - Libraries</a></li>
+  <li><a href="#example---map" id="toc-example---map" class="nav-link" data-scroll-target="#example---map"><span class="toc-section-number">4.2</span>  Example - Map</a></li>
+  </ul></li>
+  <li><a href="#things-to-note" id="toc-things-to-note" class="nav-link" data-scroll-target="#things-to-note"><span class="toc-section-number">5</span>  Things to Note</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Creating Maps in Leaflet</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Seyram A. Butame </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><img src="%22/Users/seyramb/Documents/GitHub/Rtutorials/tutorial01/img/Leaflet_logo.svg%22" class="img-fluid"></p>
+<section id="leaflet-concept-map" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="leaflet-concept-map"><span class="header-section-number">1</span> Leaflet Concept Map</h2>
+</section>
+<section id="data" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="data"><span class="header-section-number">2</span> Data</h2>
+<p>To start with, I am going to use data created by Prof.&nbsp;Lisa Lendway</p>
+</section>
+<section id="main-functions" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="main-functions"><span class="header-section-number">3</span> Main Functions</h2>
+<p>Leaflet employs a language pattern that is similar to ggplot, in that it uses layering.</p>
+<ol type="1">
+<li>We begin by creating a map widget by calling the <code>leaflet()</code> and detailing the data to be used.</li>
+<li>We then add a base map using the <code>addTiles()</code> function. <code>addTiles()</code> is the default, but there is also <code>addProviderTiles()</code>. This is similar to adding <code>geoms</code> with ggplot.</li>
+<li>We then build layers onto the map using layer functions, the most common of which include:
+<ul>
+<li><code>addMarkers()</code></li>
+<li><code>addPolygons()</code></li>
+</ul></li>
+</ol>
+<p>These layer function add detail tot he base map.</p>
+<ol start="4" type="1">
+<li>Then we repeat step three until we are satisfied with the product.</li>
+<li>It is then a matter of printing the map and displaying for all to see. Celebrate the smaller successes.</li>
+</ol>
+</section>
+<section id="example" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="example"><span class="header-section-number">4</span> Example</h2>
+<p>Before I show the example, Prof.&nbsp;created a package called <code>gardenR</code> that contains data to be used in the example. We call up the package below and read it in, to be able to use data.</p>
+<p>The package is not available on CRAN and so you neeed to install it via devtools</p>
+<pre><code>devtools::install_github("llendway/gardenR")</code></pre>
+<section id="exmaple---libraries" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="exmaple---libraries"><span class="header-section-number">4.1</span> Exmaple - Libraries</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.4.1          ✔ purrr   1.0.1     
+✔ tibble  3.1.8          ✔ dplyr   1.1.0.9000
+✔ tidyr   1.3.0          ✔ stringr 1.5.0     
+✔ readr   2.1.4          ✔ forcats 1.0.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaflet)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gardenR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="example---map" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="example---map"><span class="header-section-number">4.2</span> Example - Map</h3>
+<p>First we create a simple dataset has three variables, place, longitude, and latitude. This dataset is based on Prof.&nbsp;Lendway (I think it describes a number of her beloved places in the Saint Paul/Minneapolis area). Each location in the place column has a corresponding longitude (long) and latitude (lat) varibales critical to pinpointing the location of the place on a map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">place =</span> <span class="fu">c</span>(<span class="st">"Home"</span>, <span class="st">"Macalester College"</span>, <span class="st">"Adams Spanish Immersion"</span>, <span class="st">"Spirit Gymnastics"</span>, <span class="st">"Bama &amp; Bapa"</span>, <span class="st">"Now Bikes"</span>,<span class="st">"Dance Spectrum"</span>, <span class="st">"Pizza Luce"</span>, <span class="st">"Brunson's"</span>),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                 <span class="at">long =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">93.1405743</span>, <span class="sc">-</span><span class="fl">93.1712321</span>, <span class="sc">-</span><span class="fl">93.1451796</span>, <span class="sc">-</span><span class="fl">93.1650563</span>, <span class="sc">-</span><span class="fl">93.1542883</span>, <span class="sc">-</span><span class="fl">93.1696608</span>, <span class="sc">-</span><span class="fl">93.1393172</span>, <span class="sc">-</span><span class="fl">93.1524256</span>, <span class="sc">-</span><span class="fl">93.0753863</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">lat =</span> <span class="fu">c</span>(<span class="fl">44.950576</span>, <span class="fl">44.9378965</span>, <span class="fl">44.9237914</span>, <span class="fl">44.9654609</span>, <span class="fl">44.9295072</span>, <span class="fl">44.9436813</span>, <span class="fl">44.9399922</span>, <span class="fl">44.9468848</span>, <span class="fl">44.9700727</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">#######</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">leaflet</span>(<span class="at">data =</span> d1) <span class="sc">%&gt;%</span> <span class="do">## Calling up the data</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addTiles</span>() <span class="sc">%&gt;%</span> <span class="do">## Adding the base map</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addMarkers</span>() <span class="do">## Adding markers to the map</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Assuming "long" and "lat" are longitude and latitude, respectively</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-47e71001392364eaac3c" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-47e71001392364eaac3c">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727],[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[44.9237914,44.9700727],"lng":[-93.1712321,-93.0753863]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+<section id="things-to-note" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="things-to-note"><span class="header-section-number">5</span> Things to Note</h2>
+<ol type="1">
+<li>leaflet will assume that the variables <code>long</code> and <code>lat</code> represent the longitude and latitude and will use that for its plot. You can specify longitude and latitude variables using the <code>lat</code> and <code>lng</code> (This is assuming that you have a dataset where you need to explicitly state the latitude and the longitude). You can also add a label to each of the points by</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m2 <span class="ot">&lt;-</span> <span class="fu">leaflet</span>(<span class="at">data =</span> d1) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addTiles</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addMarkers</span>(<span class="at">lng =</span> <span class="sc">~</span>long,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">lat =</span> <span class="sc">~</span>lat,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="sc">~</span>place) </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>m2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-6b2e22d134df3342057e" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-6b2e22d134df3342057e">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addMarkers","args":[[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727],[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],null,null,null,{"interactive":true,"draggable":false,"keyboard":true,"title":"","alt":"","zIndexOffset":0,"opacity":1,"riseOnHover":false,"riseOffset":250},null,null,null,null,["Home","Macalester College","Adams Spanish Immersion","Spirit Gymnastics","Bama &amp; Bapa","Now Bikes","Dance Spectrum","Pizza Luce","Brunson's"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[44.9237914,44.9700727],"lng":[-93.1712321,-93.0753863]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>So now when you hover over each of the points it reveals the names of the places as</p>
+<ol start="2" type="1">
+<li>Because the base map is taken from the javascript library that is <code>Leaflet</code> you can do some things like zoom in and out. You can also change the type of base map that is shown. Note that <code>OpenStreetMap</code> is the default base map tiling that is used in conjunction with the <code>addTiles()</code>. However, with the <code>addProviderTiles()</code> funciton you can add third party tiles, such as the<code>Stamen.Toner</code> or the <code>Stamen.TonerLite</code> tile shown below.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">leaflet</span>(<span class="at">data =</span> d1) <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>Stamen.TonerLite) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircles</span>(<span class="at">lng =</span> <span class="sc">~</span>long,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">lat =</span> <span class="sc">~</span>lat,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="sc">~</span>place,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">weight =</span> <span class="dv">10</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">opacity =</span> <span class="fl">0.9</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"RoyalBlue"</span>) </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>m3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-fafdd6aa5af07ef2b16a" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-fafdd6aa5af07ef2b16a">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Stamen.TonerLite",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircles","args":[[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727],[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],10,null,null,{"interactive":true,"className":"","stroke":true,"color":"RoyalBlue","weight":10,"opacity":0.9,"fill":true,"fillColor":"RoyalBlue","fillOpacity":0.2},null,null,["Home","Macalester College","Adams Spanish Immersion","Spirit Gymnastics","Bama &amp; Bapa","Now Bikes","Dance Spectrum","Pizza Luce","Brunson's"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]}],"limits":{"lat":[44.9237914,44.9700727],"lng":[-93.1712321,-93.0753863]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<ol start="3" type="1">
+<li>Another possible modification is to add polygons or polygon lines (via the <code>addPolyLines()</code> funcion) to your map</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">leaflet</span>(<span class="at">data =</span> d1) <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addProviderTiles</span>(providers<span class="sc">$</span>Stamen.TonerLite) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addCircles</span>(<span class="at">lng =</span> <span class="sc">~</span>long,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">lat =</span> <span class="sc">~</span>lat,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="sc">~</span>place,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">weight =</span> <span class="dv">10</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">opacity =</span> <span class="fl">0.9</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"RoyalBlue"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPolylines</span>(<span class="at">lng =</span> <span class="sc">~</span>long,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">lat =</span> <span class="sc">~</span>lat,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"Aquamarine"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>m4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2d666ff023f3505fb7e3" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-2d666ff023f3505fb7e3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Stamen.TonerLite",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addCircles","args":[[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727],[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],10,null,null,{"interactive":true,"className":"","stroke":true,"color":"RoyalBlue","weight":10,"opacity":0.9,"fill":true,"fillColor":"RoyalBlue","fillOpacity":0.2},null,null,["Home","Macalester College","Adams Spanish Immersion","Spirit Gymnastics","Bama &amp; Bapa","Now Bikes","Dance Spectrum","Pizza Luce","Brunson's"],{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]},{"method":"addPolylines","args":[[[[{"lng":[-93.1405743,-93.1712321,-93.1451796,-93.1650563,-93.1542883,-93.1696608,-93.1393172,-93.1524256,-93.0753863],"lat":[44.950576,44.9378965,44.9237914,44.9654609,44.9295072,44.9436813,44.9399922,44.9468848,44.9700727]}]]],null,null,{"interactive":true,"className":"","stroke":true,"color":"Aquamarine","weight":5,"opacity":0.5,"fill":false,"fillColor":"Aquamarine","fillOpacity":0.2,"smoothFactor":1,"noClip":false},null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]}],"limits":{"lat":[44.9237914,44.9700727],"lng":[-93.1712321,-93.0753863]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<hr>
+<p>Image Sources:</p>
+<p><a href="https://iconscout.com/lotties/salesman-holding-tablet" target="_blank">Salesman holding tablet Animated Illustration</a> by <a href="https://iconscout.com/contributors/terdpongdesign" target="_blank">Terdpongdesign</a></p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

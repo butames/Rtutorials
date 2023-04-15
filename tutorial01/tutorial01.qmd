@@ -1,0 +1,148 @@
+---
+title: "Creating Maps in Leaflet"
+author: "Seyram A. Butame"
+format: 
+  html: 
+    theme: sandstone
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: Contents
+    number-sections: true
+    number-depth: 3
+    font-family: Quicksand
+---
+
+![]("/Users/seyramb/Documents/GitHub/Rtutorials/tutorial01/img/Leaflet_logo.svg")
+
+## Leaflet Concept Map
+
+## Data
+
+To start with, I am going to use data created by Prof. Lisa Lendway
+
+## Main Functions
+
+Leaflet employs a language pattern that is similar to ggplot, in that it uses layering.
+
+1. We begin by creating a map widget by calling the `leaflet()` and detailing the data to be used.
+2. We then add a base map using the `addTiles()` function. `addTiles()` is the default, but there is also `addProviderTiles()`. This is similar to adding `geoms` with ggplot.
+3. We then build layers onto the map using layer functions, the most common of which include:
+    - `addMarkers()`
+    - `addPolygons()`
+  
+  These layer function add detail tot he base map.
+  
+4. Then we repeat step three until we are satisfied with the product.
+5. It is then a matter of printing the map and displaying for all to see. Celebrate the smaller successes.
+
+## Example
+
+Before I show the example, Prof. created a package called `gardenR` that contains data to be used in the example. We call up the package below and read it in, to be able to use data.
+
+The package is not available on CRAN and so you neeed to install it via devtools
+
+```
+devtools::install_github("llendway/gardenR")
+```
+
+
+
+
+### Exmaple - Libraries
+
+```{r}
+
+library(tidyverse)
+library(leaflet)
+library(gardenR)
+
+```
+
+
+### Example - Map
+
+First we create a simple dataset has three variables, place, longitude, and latitude. This dataset is based on Prof. Lendway (I think it describes a number of her beloved places in the Saint Paul/Minneapolis area). Each location in the place column has a corresponding longitude (long) and latitude (lat) varibales critical to pinpointing the location of the place on a map.
+
+```{r}
+d1 <- data.frame(place = c("Home", "Macalester College", "Adams Spanish Immersion", "Spirit Gymnastics", "Bama & Bapa", "Now Bikes","Dance Spectrum", "Pizza Luce", "Brunson's"),
+                 long = c(-93.1405743, -93.1712321, -93.1451796, -93.1650563, -93.1542883, -93.1696608, -93.1393172, -93.1524256, -93.0753863),
+                 lat = c(44.950576, 44.9378965, 44.9237914, 44.9654609, 44.9295072, 44.9436813, 44.9399922, 44.9468848, 44.9700727)
+  ) %>%
+  as_tibble() 
+
+
+#######
+
+m1 <- leaflet(data = d1) %>% ## Calling up the data
+  addTiles() %>% ## Adding the base map
+  addMarkers() ## Adding markers to the map
+
+m1
+
+```
+
+
+## Things to Note
+
+1. leaflet will assume that the variables `long` and `lat` represent the longitude and latitude and will use that for its plot. You can specify longitude and latitude variables using the `lat` and `lng` (This is assuming that you have a dataset where you need to explicitly state the latitude and the longitude). You can also add a label to each of the points by
+
+```{r}
+
+m2 <- leaflet(data = d1) %>%
+  addTiles() %>%
+  addMarkers(lng = ~long,
+             lat = ~lat,
+             label = ~place) 
+
+m2
+
+
+```
+
+So now when you hover over each of the points it reveals the names of the places as 
+
+
+2. Because the base map is taken from the javascript library that is `Leaflet` you can do some things like zoom in and out. You can also change the type of base map that is shown. Note that `OpenStreetMap` is the default base map tiling that is used in conjunction with the `addTiles()`. However, with the `addProviderTiles()` funciton you can add third party tiles, such as the`Stamen.Toner` or the `Stamen.TonerLite` tile shown below.
+
+```{r}
+
+m3 <- leaflet(data = d1) %>%
+  addProviderTiles(providers$Stamen.TonerLite) %>%
+  addCircles(lng = ~long,
+             lat = ~lat,
+             label = ~place,
+             weight = 10,
+             opacity = 0.9,
+             color = "RoyalBlue") 
+
+m3
+
+```
+
+3. Another possible modification is to add polygons or polygon lines (via the `addPolyLines()` funcion) to your map
+
+```{r}
+
+m4 <- leaflet(data = d1) %>%
+  addProviderTiles(providers$Stamen.TonerLite) %>%
+  addCircles(lng = ~long,
+             lat = ~lat,
+             label = ~place,
+             weight = 10,
+             opacity = 0.9,
+             color = "RoyalBlue") %>%
+  addPolylines(lng = ~long,
+               lat = ~lat,
+               color = "Aquamarine")
+m4
+
+```
+
+
+---
+
+Image Sources:
+
+<a href="https://iconscout.com/lotties/salesman-holding-tablet" target="_blank">Salesman holding tablet Animated Illustration</a> by <a href="https://iconscout.com/contributors/terdpongdesign" target="_blank">Terdpongdesign</a>
